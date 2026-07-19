@@ -9,8 +9,8 @@ Three pillars of fraud protection for Indian citizens:
 | Pillar | Feature | Status |
 |--------|---------|--------|
 | 🛡️ Scam Detector | Analyzes call transcripts/messages for digital-arrest scam indicators | ✅ Live |
-| 🔍 Counterfeit Detector | Checks currency note photos for counterfeit indicators | 🚧 Day 2 |
-| 🕸️ Fraud Network Graph | Visualizes scammer-victim-mule connections | 🚧 Day 3 |
+| 🔍 Counterfeit Detector | Checks currency note photos for counterfeit indicators | ✅ Live |
+| 🕸️ Fraud Network Graph | Visualizes scammer-victim-mule connections | ✅ Live |
 
 ## Tech Stack
 
