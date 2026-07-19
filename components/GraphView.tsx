@@ -78,27 +78,30 @@ export default function GraphView() {
   return (
     <div className="glass-card flex flex-col p-4 w-full h-full min-h-[600px]">
       {/* Search Bar */}
-      <div className="flex flex-col sm:flex-row gap-2 mb-4">
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <select
           value={searchType}
           onChange={(e) => setSearchType(e.target.value)}
-          className="p-2 border border-white/20 rounded bg-white/5 text-foreground outline-none focus:border-blue-500"
+          className="px-4 py-3 border rounded-xl bg-transparent outline-none transition-colors text-sm font-medium"
+          style={{ borderColor: "var(--border)", color: "var(--foreground)" }}
         >
-          <option value="phone" className="text-black">Phone Number</option>
-          <option value="mule" className="text-black">Mule Account</option>
-          <option value="scammer" className="text-black">Scammer ID</option>
+          <option value="phone" style={{ background: "var(--background-card)" }}>Phone Number</option>
+          <option value="mule" style={{ background: "var(--background-card)" }}>Mule Account</option>
+          <option value="scammer" style={{ background: "var(--background-card)" }}>Scammer ID</option>
         </select>
         <input
           type="text"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           placeholder="Enter ID or Value"
-          className="p-2 border border-white/20 rounded flex-grow bg-white/5 text-foreground outline-none focus:border-blue-500"
+          className="px-4 py-3 border rounded-xl flex-grow bg-transparent outline-none transition-colors text-sm placeholder:text-muted"
+          style={{ borderColor: "var(--border)", color: "var(--foreground)" }}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         />
         <button
           onClick={handleSearch}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+          disabled={loading}
+          className="btn-accent px-6 justify-center text-sm"
         >
           Search
         </button>
@@ -107,7 +110,13 @@ export default function GraphView() {
             setSearchValue("");
             fetchGraph("full");
           }}
-          className="bg-white/10 text-foreground px-4 py-2 rounded hover:bg-white/20 transition-colors"
+          disabled={loading}
+          className="px-6 py-3 rounded-xl text-sm font-medium transition-all"
+          style={{
+            background: "var(--background-card)",
+            color: "var(--foreground-muted)",
+            border: "1px solid var(--border)",
+          }}
         >
           Reset
         </button>
@@ -115,22 +124,55 @@ export default function GraphView() {
 
       {/* Graph Area */}
       <div
-        className="flex-grow w-full border border-white/10 rounded relative bg-white/5 overflow-hidden"
+        className="flex-grow w-full border rounded-xl relative overflow-hidden"
+        style={{ borderColor: "var(--border)", background: "var(--background-secondary)" }}
         ref={containerRef}
       >
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40 z-10 text-foreground">
-            Loading graph...
+          <div className="absolute inset-0 flex flex-col p-4 z-10 bg-black/20 backdrop-blur-sm">
+             <div className="loading-shimmer w-full h-full rounded-xl"></div>
           </div>
         )}
+        
         {error && (
-          <div className="absolute inset-0 flex items-center justify-center z-10 text-red-500 font-bold p-4 text-center bg-black/20">
-            {error}
+          <div className="absolute inset-0 flex items-center justify-center p-6 z-10 bg-black/40 backdrop-blur-sm">
+            <div
+              className="p-4 rounded-xl animate-fade-in max-w-md w-full"
+              style={{
+                background: "rgba(239, 68, 68, 0.1)",
+                border: "1px solid rgba(239, 68, 68, 0.3)",
+              }}
+            >
+              <p className="flex items-center gap-2 text-sm" style={{ color: "var(--risk-scam)" }}>
+                <svg className="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+                {error}
+              </p>
+            </div>
           </div>
         )}
+
         {!loading && !error && data && data.nodes.length === 0 && (
-          <div className="absolute inset-0 flex items-center justify-center z-10 text-foreground/60 bg-black/20">
-            {mode === "full" ? "No data yet — run the seed script" : "No results for that search"}
+          <div className="absolute inset-0 flex items-center justify-center z-10">
+            <div className="flex flex-col items-center gap-3 text-center">
+              <div
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto"
+                style={{
+                  background: "rgba(168, 85, 247, 0.1)",
+                  color: "#c084fc",
+                }}
+              >
+                <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-base font-medium" style={{ color: "var(--foreground)" }}>
+                  {mode === "full" ? "No data yet — run the seed script" : "No results for that search"}
+                </p>
+              </div>
+            </div>
           </div>
         )}
         {!loading && !error && data && data.nodes.length > 0 && (

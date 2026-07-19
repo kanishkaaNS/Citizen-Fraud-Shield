@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,7 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Citizen Fraud Shield — AI-Powered Digital Public Safety",
   description:
-    "Real-time AI tools to detect digital-arrest scams, identify counterfeit currency, and map fraud networks. Protecting Indian citizens before money moves.",
+    "AI platform for Indian citizens to detect scams, counterfeit currency, and trace fraud networks.",
 };
 
 export default function RootLayout({
@@ -24,11 +26,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+      >
+        <Nav />
+        <main className="flex-1 flex flex-col">
+          {children}
+        </main>
+        <Footer />
+      </body>
     </html>
   );
 }
