@@ -1,28 +1,32 @@
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.warn(
-    "Supabase environment variables not set — database operations will fail"
-  );
-}
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 /**
- * Server-side Supabase client using the service role key.
- * Never import this in client components.
+ * Lazy singleton — only created on first actual call at runtime,
+ * NOT at module evaluation time. This prevents build-time crashes
+ * when NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are absent.
  */
-export const supabase = createClient(
-  supabaseUrl || "",
-  supabaseServiceKey || "",
-  {
+let _client: SupabaseClient | null = null;
+
+function getSupabase(): SupabaseClient {
+  if (_client) return _client;
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error(
+      "Supabase environment variables not set (NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)"
+    );
+  }
+
+  _client = createClient(supabaseUrl, supabaseServiceKey, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
     },
-  }
-);
+  });
+  return _client;
+}
 
 export interface ScamReportRow {
   text_snippet: string;
@@ -44,7 +48,7 @@ export interface CurrencyCheckRow {
  * Stores only the first 200 chars of input text (data minimisation).
  */
 export async function insertScamReport(report: ScamReportRow) {
-  const { error } = await supabase.from("scam_reports").insert({
+  const { error } = await getSupabase().from("scam_reports").insert({
     text_snippet: report.text_snippet.substring(0, 200),
     risk_score: report.risk_score,
     verdict: report.verdict,
@@ -62,7 +66,7 @@ export async function insertScamReport(report: ScamReportRow) {
  * Insert a currency check log into the currency_checks table.
  */
 export async function insertCurrencyCheck(check: CurrencyCheckRow) {
-  const { error } = await supabase.from("currency_checks").insert({
+  const { error } = await getSupabase().from("currency_checks").insert({
     image_hash: check.image_hash,
     verdict: check.verdict,
     confidence: check.confidence,
@@ -79,10 +83,10 @@ export async function insertCurrencyCheck(check: CurrencyCheckRow) {
  */
 export async function getStats() {
   const [scamResult, currencyResult] = await Promise.all([
-    supabase
+    getSupabase()
       .from("scam_reports")
       .select("id", { count: "exact", head: true }),
-    supabase
+    getSupabase()
       .from("currency_checks")
       .select("id", { count: "exact", head: true }),
   ]);
