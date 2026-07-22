@@ -38,6 +38,16 @@ export async function classifyScam(
   text: string,
   systemPrompt: string
 ): Promise<ScamClassificationResult> {
+  if (process.env.GEMINI_API_KEY === "your_gemini_api_key_here") {
+    // Mock response when testing locally without a real API key
+    return {
+      risk_score: text.toLowerCase().includes("arrest") || text.toLowerCase().includes("1,00,000") ? 95 : 10,
+      verdict: text.toLowerCase().includes("arrest") || text.toLowerCase().includes("1,00,000") ? "SCAM" : "SAFE",
+      flagged_phrases: ["Rs1,00,000", "bank account"],
+      explanation: "MOCK MODE: This message contains classic scam indicators like unexpected credit of a large amount."
+    };
+  }
+
   const model = getGenAI().getGenerativeModel({ model: "gemini-2.0-flash" });
 
   const abortController = new AbortController();
@@ -96,6 +106,15 @@ export async function checkCurrency(
   mimeType: string,
   systemPrompt: string
 ): Promise<CurrencyCheckResult> {
+  if (process.env.GEMINI_API_KEY === "your_gemini_api_key_here") {
+    // Mock response for currency
+    return {
+      verdict: "LIKELY_FAKE",
+      confidence: 85,
+      indicators: ["MOCK MODE: No valid API key provided. Returning mock data."]
+    };
+  }
+
   const model = getGenAI().getGenerativeModel({ model: "gemini-2.0-flash" });
 
   const abortController = new AbortController();

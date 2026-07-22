@@ -10,7 +10,7 @@ const ALLOWED_TYPES = new Set([
   "image/webp",
 ]);
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
 // Simple in-memory rate limiter (same pattern as scam route)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
   // Validate file size
   if (file.size > MAX_FILE_SIZE) {
     return Response.json(
-      { error: "File too large. Maximum size is 10 MB." },
+      { error: "File too large. Maximum size is 5 MB." },
       { status: 400 }
     );
   }
@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
       : "Currency analysis service unavailable. Please try again later.";
     return Response.json(
       { error: msg },
-      { status: 500 }
+      { status: 502 }
     );
   }
 }

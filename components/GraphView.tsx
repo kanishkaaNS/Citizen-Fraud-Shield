@@ -3,7 +3,10 @@
 import { useEffect, useState, useRef } from "react";
 import dynamic from "next/dynamic";
 
-const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), { ssr: false });
+const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), { 
+  ssr: false,
+  loading: () => <div className="absolute inset-0 flex items-center justify-center p-4 z-10"><div className="loading-shimmer w-full h-full rounded-xl"></div></div>
+});
 
 export default function GraphView() {
   const [data, setData] = useState<{ nodes: any[]; links: any[] } | null>(null);
@@ -185,6 +188,26 @@ export default function GraphView() {
             linkDirectionalArrowLength={4}
             linkDirectionalArrowRelPos={1}
             nodeRelSize={6}
+            nodeCanvasObjectMode={() => 'after'}
+            nodeCanvasObject={(node: any, ctx, globalScale) => {
+              const label = node.label || node.id;
+              const fontSize = 12 / globalScale;
+              ctx.font = `${fontSize}px Sans-Serif`;
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.fillStyle = getNodeColor(node);
+              
+              // Add a slight dark shadow behind text for readability on dark background
+              ctx.shadowColor = 'rgba(0,0,0,0.8)';
+              ctx.shadowBlur = 4;
+              
+              // Draw text slightly below the default circle
+              ctx.fillText(label, node.x, node.y + (10 / globalScale));
+              
+              // Reset shadow
+              ctx.shadowColor = 'transparent';
+              ctx.shadowBlur = 0;
+            }}
           />
         )}
       </div>

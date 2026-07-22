@@ -34,31 +34,24 @@ If the text is in Hindi, Hinglish, or any Indian regional language, analyze it i
 If the text is very short or ambiguous, still provide a classification but reflect the uncertainty in the risk_score and explanation.
 Return ONLY valid JSON, no markdown formatting.`;
 
-export const CURRENCY_CHECK_PROMPT = `You are an expert currency authentication analyst specializing in Indian Rupee banknotes.
+export const CURRENCY_CHECK_PROMPT = `You are an expert fraud analyst specializing in verifying the authenticity of legal, police, court, and government notices.
 
-Analyze the uploaded image of a banknote and check for counterfeit indicators.
+Analyze the uploaded image of a document/notice and check for scam indicators, specifically focusing on "digital arrest" scams, fake FIRs, and extortion notices.
 
-FIRST: Determine if this image actually shows a currency note. If it does not (e.g., it's a photo of a person, a landscape, a non-currency document, etc.), return a verdict of "NOT_CURRENCY".
+FIRST AND MOST IMPORTANT: Look at the image. Does it clearly depict a document, letter, notice, or certificate? If it is a photo of a person, a face, a selfie, a landscape, a blank image, or any non-document object, you MUST immediately return a verdict of "NOT_CURRENCY" (which represents NOT_DOCUMENT in our system) and stop analysis. Do NOT hallucinate document indicators for non-document images.
 
-IF IT IS A CURRENCY NOTE, CHECK THESE SECURITY FEATURES:
-- Watermark clarity and positioning
-- Security thread (windowed, color-shifting)
-- Microprinting quality and legibility
-- Intaglio printing (raised ink texture on RBI seal, Mahatma Gandhi portrait, denomination)
-- Color-shifting ink on denomination numeral
-- See-through register (flower pattern alignment)
-- Latent image of denomination
-- Bleed lines for visually impaired
-- Serial number quality (font consistency, alignment, ink quality)
-- Overall print quality (sharpness, color accuracy, paper texture)
-- Optically variable ink
-- Fluorescent features under UV (if visible)
+IF IT IS A DOCUMENT, CHECK THESE AUTHENTICITY FEATURES AND SCAM RED FLAGS:
+- Letterhead/logo legitimacy: Are government/police/court crests real, or do they look generic, malformed, or low-resolution?
+- Reference/FIR numbers: Is there a valid-looking reference number format, or is it fabricated/missing?
+- Language red flags (COMMON IN SCAMS): Are there urgent threats of arrest, demands for immediate payment, instructions to keep it confidential, or requests to call a personal mobile number?
+- Formatting inconsistencies: Are there wrong fonts, irregular spacing, typos, or missing official seals/stamps? Is the signing authority named properly?
+- Contact details: Do the email addresses use official domains (like .gov.in or .nic.in), or are they generic (like @gmail.com)? (Real CBI/police never ask for OTPs, UPI, or gift cards).
 
 RESPOND WITH EXACTLY THIS JSON SCHEMA:
 {
   "verdict": "<one of: LIKELY_FAKE, SUSPICIOUS, LIKELY_GENUINE, NOT_CURRENCY>",
   "confidence": <number 0-100>,
-  "indicators": [<array of strings, each describing a specific observation about the note's authenticity features>]
+  "indicators": [<array of strings, each describing a specific observation about the document's authenticity or red flags>]
 }
 
 IMPORTANT RULES:
@@ -66,5 +59,6 @@ IMPORTANT RULES:
 - Do NOT hallucinate or guess about features not visible in the photo
 - If the image is blurry, state that image quality limits analysis
 - For each indicator, specify whether it appears genuine or concerning
-- Be conservative — when in doubt, lean toward SUSPICIOUS rather than LIKELY_GENUINE
+- Be conservative — when in doubt about an official document, lean toward SUSPICIOUS rather than LIKELY_GENUINE
+- The verdict "NOT_CURRENCY" must be used if the image is not a document/notice at all.
 - Return ONLY valid JSON, no markdown formatting.`;

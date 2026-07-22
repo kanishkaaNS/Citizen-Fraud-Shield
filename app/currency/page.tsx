@@ -3,9 +3,9 @@ import CurrencyUpload from "@/components/CurrencyUpload";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Counterfeit Detector — Citizen Fraud Shield",
+  title: "Notice Detector — Citizen Fraud Shield",
   description:
-    "Upload a photo of a currency note to check for counterfeit indicators using AI-powered vision analysis.",
+    "Upload a photo of a legal, police, or government notice to check if it's genuine or a scam.",
 };
 
 export default function CurrencyPage() {
@@ -27,10 +27,10 @@ export default function CurrencyPage() {
           Pillar 2 · AI Vision Analysis
         </div>
         <h1 className="text-4xl font-bold mb-3 gradient-text" style={{ lineHeight: 1.2 }}>
-          Counterfeit Detector
+          Notice Detector
         </h1>
         <p className="text-lg max-w-xl mx-auto" style={{ color: "var(--foreground-muted)" }}>
-          Upload a photo of a currency note to check for counterfeit indicators.
+          Upload a photo of a legal, police, or government notice to check if it's genuine or a scam.
         </p>
       </header>
 

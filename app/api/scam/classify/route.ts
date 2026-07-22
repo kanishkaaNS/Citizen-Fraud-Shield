@@ -94,12 +94,10 @@ export async function POST(request: NextRequest) {
     return Response.json(result);
   } catch (error: any) {
     console.error("Scam classification failed:", error);
-    const msg = error?.message?.includes("taking longer than expected")
-      ? error.message
-      : "Classification service unavailable. Please try again later.";
+    const msg = error?.message || "Classification service unavailable. Please try again later.";
     return Response.json(
       { error: msg },
-      { status: 500 }
+      { status: 502 }
     );
   }
 }

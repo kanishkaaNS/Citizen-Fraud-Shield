@@ -158,7 +158,7 @@ export default function CurrencyUpload() {
       case "LIKELY_FAKE":
         return "Likely Fake";
       case "NOT_CURRENCY":
-        return "Not Currency";
+        return "Not a Document";
       default:
         return verdict;
     }
@@ -218,7 +218,7 @@ export default function CurrencyUpload() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={preview}
-                  alt="Uploaded currency note preview"
+                  alt="Uploaded document preview"
                   className="image-preview mx-auto"
                 />
                 <div>
@@ -266,7 +266,7 @@ export default function CurrencyUpload() {
                     className="text-base font-medium"
                     style={{ color: "var(--foreground)" }}
                   >
-                    Drop a currency note photo here
+                    Drop a notice/document photo here
                   </p>
                   <p
                     className="text-sm mt-1"
@@ -444,34 +444,28 @@ export default function CurrencyUpload() {
                     className="text-base leading-relaxed"
                     style={{ color: "var(--foreground-muted)" }}
                   >
-                    The uploaded image doesn&apos;t appear to be a currency
-                    note. Please upload a clear photo of an Indian Rupee
-                    banknote.
+                    The uploaded image doesn&apos;t appear to be a notice or document. Please upload a clear photo of a legal, police, or government notice.
                   </p>
                 ) : result.verdict === "LIKELY_GENUINE" ? (
                   <p
                     className="text-base leading-relaxed"
                     style={{ color: "var(--foreground)" }}
                   >
-                    The note appears to have genuine security features. However,
-                    always verify with a bank for high-value transactions.
+                    The document appears to have genuine formatting and language. However, always verify with the issuing authority using official channels.
                   </p>
                 ) : result.verdict === "SUSPICIOUS" ? (
                   <p
                     className="text-base leading-relaxed"
                     style={{ color: "var(--foreground)" }}
                   >
-                    Some features raise concern. We recommend physical
-                    verification at a bank before accepting this note.
+                    Some features raise concern. We recommend contacting the issuing agency directly using official public phone numbers before taking any action.
                   </p>
                 ) : (
                   <p
                     className="text-base leading-relaxed"
                     style={{ color: "var(--foreground)" }}
                   >
-                    Multiple indicators suggest this note may be counterfeit. Do
-                    not accept it — report to your nearest bank or police
-                    station.
+                    Multiple indicators suggest this document is likely a fake or scam notice. Do not pay any money or share personal details. Report it immediately.
                   </p>
                 )}
               </div>
@@ -484,7 +478,7 @@ export default function CurrencyUpload() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={preview}
-                alt="Analyzed currency note"
+                alt="Analyzed document preview"
                 className="image-preview mx-auto"
               />
             </div>
@@ -535,7 +529,7 @@ export default function CurrencyUpload() {
                   d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"
                 />
               </svg>
-              Check Another Note
+              Check Another Document
             </button>
           </div>
 
@@ -548,8 +542,8 @@ export default function CurrencyUpload() {
             }}
           >
             ⚠️ This is an AI-assisted analysis tool, not a definitive
-            authentication. Always consult a bank or authorized entity for
-            official currency verification.
+            authentication. Always consult official agency channels for
+            official document verification.
           </div>
         </div>
       )}
